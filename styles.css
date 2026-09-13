@@ -1,0 +1,971 @@
+@import url("assets/glyph-masks.css");
+
+/* 1. Базовые цвета и геометрия макета. */
+:root {
+  --accent: #e000ff;
+  --panel: rgba(19, 19, 28, 0.97);
+  --surface: rgba(255, 255, 255, 0.01);
+  --muted: rgba(255, 255, 255, 0.45);
+  --track: rgba(79, 79, 100, 0.25);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #fff;
+  color: #fff;
+  font-family:
+    "SF Pro",
+    "SF Pro Display",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-weight: 300;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+button {
+  border: 0;
+  cursor: pointer;
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+#stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.26),
+    transparent 50%,
+    rgba(0, 0, 0, 0.26)
+  );
+}
+.tab {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  padding: 15px;
+  border-radius: 3px;
+  transform: rotate(-45deg);
+  background: var(--panel);
+  transition:
+    background-color 0.38s ease,
+    box-shadow 0.38s ease;
+}
+.tab img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  transform: rotate(45deg);
+  transition: filter 0.38s ease;
+}
+.tab[aria-selected="true"] {
+  background: var(--accent);
+}
+.tab[aria-selected="true"] img {
+  filter: brightness(0) invert(1);
+}
+.tab:hover {
+  box-shadow: 0 0 15px #e000ff35;
+}
+.panel {
+  position: absolute;
+  right: 30px;
+  width: 462px;
+  padding: 20px;
+  border-radius: 15px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.panel[hidden] {
+  display: none;
+}
+.panel header {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.panel h1 {
+  font-size: 16px;
+  font-weight: 300;
+  margin: 0;
+  line-height: 1.044;
+}
+.heading-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+}
+.heading-icon img {
+  width: 25px;
+  height: 25px;
+}
+.genetics {
+  width: 460px;
+  top: 138px;
+  height: 805px;
+}
+.face {
+  top: 178px;
+  height: 729px;
+}
+.appearance {
+  top: 338px;
+  height: 405px;
+}
+.hair {
+  top: 276px;
+  height: 528px;
+}
+.clothes {
+  top: 313px;
+  height: 454px;
+}
+.field {
+  border: 0;
+  background: var(--surface);
+  height: 50px;
+  width: 100%;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  outline: none;
+}
+.field::placeholder {
+  color: var(--muted);
+}
+.field:focus {
+  box-shadow: inset 0 0 0 1px #e000ff60;
+}
+.fields,
+.sexes,
+.parent-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+.sex {
+  height: 150px;
+  background: var(--surface);
+  border-radius: 5px;
+  position: relative;
+  color: var(--muted);
+  font-size: 14px;
+}
+.sex > span:last-child {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+}
+.sex-symbol {
+  position: absolute;
+  top: 33px;
+  left: 82.5px;
+  width: 35px;
+  height: 64px;
+  transition:
+    filter 0.3s,
+    opacity 0.3s;
+  opacity: 0.65;
+}
+.sex-symbol img {
+  width: 35px;
+  height: 64px;
+}
+.sex[aria-pressed="true"] {
+  color: #fff;
+}
+.sex[aria-pressed="true"] .sex-symbol {
+  opacity: 1;
+  filter: drop-shadow(0 0 7px #24abe44d);
+}
+.sex:hover .sex-symbol {
+  opacity: 1;
+  filter: drop-shadow(0 0 9px #46bfea80);
+}
+.sex-female[aria-pressed="true"] .sex-symbol,
+.sex-female:hover .sex-symbol {
+  filter: brightness(1.7) drop-shadow(0 0 7px #e000ff60);
+}
+.female-symbol img {
+  width: 35px;
+  height: 35px;
+}
+.female-symbol:before,
+.female-symbol:after {
+  content: "";
+  position: absolute;
+  background: #4f4f64;
+  border-radius: 4px;
+}
+.female-symbol:before {
+  width: 8px;
+  height: 28px;
+  left: 13.5px;
+  top: 34px;
+}
+.female-symbol:after {
+  width: 20px;
+  height: 8px;
+  left: 7.5px;
+  top: 48px;
+}
+.parents {
+  height: 150px;
+  margin-top: 20px;
+  background: var(--surface);
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+.portrait {
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  bottom: 0;
+  object-fit: contain;
+}
+.portrait.mother {
+  left: 85px;
+}
+.portrait.father {
+  left: 205px;
+}
+.control {
+  height: 60px;
+  background: var(--surface);
+  border-radius: 5px;
+  font-size: 14px;
+  min-width: 0;
+}
+.control-title {
+  display: block;
+  height: 25px;
+  text-align: center;
+  color: var(--muted);
+  padding-top: 8px;
+  line-height: 17px;
+}
+.selector {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+.arrow {
+  background: none;
+  width: 24px;
+  height: 28px;
+  padding: 2px;
+}
+.arrow img {
+  width: 20px;
+  height: 20px;
+}
+.arrow.next img {
+  transform: scaleX(-1);
+}
+.arrow:hover {
+  filter: drop-shadow(0 0 5px var(--accent));
+}
+.range-row {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+.range-row > span {
+  color: var(--muted);
+  width: 65px;
+  flex-shrink: 0;
+}
+.range-row > span:last-child {
+  text-align: right;
+}
+.range {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 5px;
+  width: 100%;
+  margin: 0;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill),
+    var(--track) var(--fill)
+  );
+  border-radius: 5px;
+  cursor: pointer;
+  transition: box-shadow 0.22s;
+}
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 10px;
+  background: white;
+  border-radius: 3px;
+  transition: box-shadow 0.22s;
+}
+.range::-moz-range-thumb {
+  border: 0;
+  width: 15px;
+  height: 10px;
+  background: #fff;
+  border-radius: 3px;
+}
+.range:hover,
+.range:active,
+.range:focus-visible {
+  box-shadow: 0 0 9px #e000ff70;
+}
+.range:hover::-webkit-slider-thumb,
+.range:active::-webkit-slider-thumb {
+  box-shadow: 0 0 8px #fff8;
+}
+.genetics > .control {
+  margin-top: 20px;
+}
+.slider-grid {
+  display: grid;
+  grid-template-columns: 200px 200px;
+  gap: 20px 22px;
+}
+.control.wide {
+  grid-column: span 2;
+}
+.wide .range-row {
+  padding-inline: 21px;
+}
+.palette {
+  background: var(--surface);
+  border-radius: 5px;
+  height: 64px;
+  padding: 10px 13px;
+  margin-top: 20px;
+}
+.palette-label {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  height: 25px;
+}
+.swatches {
+  display: flex;
+  gap: 10px;
+}
+.swatch {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  padding: 0;
+}
+.swatch[aria-pressed="true"] {
+  outline: 1px solid white;
+  outline-offset: 2px;
+}
+.hair header {
+  margin-bottom: 10px;
+}
+.hair .palette {
+  margin-top: 0;
+}
+.styles-group {
+  height: 103px;
+  margin-top: 20px;
+}
+.styles-title {
+  height: 43px;
+  font-size: 16px;
+  text-align: center;
+  color: var(--muted);
+}
+.style-options {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 1px;
+}
+.style-options::-webkit-scrollbar {
+  display: none;
+}
+.style-option {
+  flex: 0 0 60px;
+  height: 60px;
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 16px;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    box-shadow 0.25s;
+}
+.style-option[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+.style-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    transition: none !important;
+  }
+}
+.control {
+  display: block;
+}
+.tab:not([aria-selected="true"]):first-child img {
+  filter: brightness(0.38);
+}
+
+/* 2. Адаптивность: сцена заполняет окно, элементы сохраняют пропорции. */
+#stage {
+  overflow: hidden;
+}
+#tabs {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 176px;
+  height: 325px;
+  transform: translateY(-50%);
+}
+.tab {
+  top: calc(var(--tab-index) * 60px + 12.426px) !important;
+}
+.tab:nth-child(1) {
+  --tab-index: 0;
+}
+.tab:nth-child(2) {
+  --tab-index: 1;
+}
+.tab:nth-child(3) {
+  --tab-index: 2;
+}
+.tab:nth-child(4) {
+  --tab-index: 3;
+}
+.tab:nth-child(5) {
+  --tab-index: 4;
+}
+.panel {
+  top: calc(50% - var(--panel-height) / 2);
+  height: var(--panel-height);
+}
+.genetics {
+  --panel-height: 805px;
+}
+.face {
+  --panel-height: 729px;
+}
+.appearance {
+  --panel-height: 405px;
+}
+.hair {
+  --panel-height: 528px;
+}
+.clothes {
+  --panel-height: 454px;
+}
+.sex {
+  --sex-color: #29abe2;
+}
+.sex-female {
+  --sex-color: #ff2d55;
+}
+.sex-female .sex-symbol:not(.sex-backdrop) img {
+  visibility: hidden;
+}
+.sex-female .sex-symbol:not(.sex-backdrop) {
+  background: var(--sex-color);
+  mask: var(--figma-mask-1) center top / 35px 35px no-repeat;
+}
+.sex-female .sex-symbol:not(.sex-backdrop):before,
+.sex-female .sex-symbol:not(.sex-backdrop):after {
+  display: none;
+}
+.sex-female:before,
+.sex-female:after {
+  content: "";
+  position: absolute;
+  background: var(--sex-color);
+  border-radius: 4px;
+  opacity: 0.65;
+  transition:
+    opacity 0.3s,
+    filter 0.3s;
+}
+.sex-female:before {
+  width: 8px;
+  height: 28px;
+  left: 96px;
+  top: 67px;
+}
+.sex-female:after {
+  width: 20px;
+  height: 8px;
+  left: 90px;
+  top: 81px;
+}
+.sex[aria-pressed="true"] .sex-symbol:not(.sex-backdrop),
+.sex:hover .sex-symbol:not(.sex-backdrop) {
+  filter: drop-shadow(
+    0 0 7px color-mix(in srgb, var(--sex-color) 40%, transparent)
+  );
+  opacity: 1;
+}
+.sex-female[aria-pressed="true"]:before,
+.sex-female[aria-pressed="true"]:after,
+.sex-female:hover:before,
+.sex-female:hover:after {
+  opacity: 1;
+  filter: drop-shadow(0 0 7px #ff2d5566);
+}
+.sex .sex-backdrop,
+.sex:hover .sex-backdrop,
+.sex[aria-pressed="true"] .sex-backdrop {
+  left: 72px;
+  top: 14px;
+  width: 56px;
+  height: 102px;
+  transform: rotate(180deg);
+  opacity: 0.11;
+  filter: grayscale(1);
+  transition: none;
+  pointer-events: none;
+}
+.sex-backdrop img {
+  width: 56px;
+  height: 102px;
+}
+.female-symbol.sex-backdrop img {
+  width: 56px;
+  height: 56px;
+}
+.female-symbol.sex-backdrop:before {
+  width: 13px;
+  height: 46px;
+  left: 21.5px;
+  top: 55px;
+}
+.female-symbol.sex-backdrop:after {
+  width: 33px;
+  height: 13px;
+  left: 11.5px;
+  top: 77px;
+}
+.range:hover,
+.range:active,
+.range:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 8px #fff8;
+}
+.range:hover::-moz-range-thumb,
+.range:active::-moz-range-thumb,
+.range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 8px #fff8;
+}
+.input-wrap {
+  display: block;
+  position: relative;
+  height: 50px;
+  min-width: 0;
+}
+.field {
+  text-align: left;
+  padding: 0 16px;
+  caret-color: #fff;
+}
+.field:focus,
+.field:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+.input-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: 14px;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.input-wrap:focus-within .input-placeholder,
+.input-wrap.has-value .input-placeholder {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+.field[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.field::-webkit-inner-spin-button,
+.field::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 3. Прозрачный фон и финальные состояния элементов. */
+html,
+body {
+  background: transparent;
+}
+#stage {
+  background-color: transparent;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.26), transparent 50%),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.26), transparent 50%);
+}
+.sex {
+  --glyph-color: #4f4f64;
+}
+.sex[aria-pressed="true"] {
+  --glyph-color: var(--sex-color);
+}
+.sex .sex-symbol:not(.sex-backdrop) {
+  opacity: 1;
+  background: var(--glyph-color);
+  transition:
+    background-color 0.3s,
+    filter 0.3s;
+}
+.sex:not(.sex-female) .sex-symbol:not(.sex-backdrop) {
+  mask: var(--figma-mask-2) center / 35px 64px no-repeat;
+}
+.sex:not(.sex-female) .sex-symbol:not(.sex-backdrop) img {
+  visibility: hidden;
+}
+.sex-female .sex-symbol:not(.sex-backdrop) {
+  background: none;
+  mask: none;
+}
+.sex-female:before,
+.sex-female:after {
+  display: none;
+}
+.sex-female .sex-symbol:not(.sex-backdrop):before,
+.sex-female .sex-symbol:not(.sex-backdrop):after {
+  display: block;
+  background: var(--glyph-color);
+  transition: background-color 0.3s;
+}
+.sex-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 35px;
+  height: 35px;
+  background: var(--glyph-color);
+  mask: var(--figma-mask-3) center / 35px 35px no-repeat;
+  transition: background-color 0.3s;
+}
+.sex:not([aria-pressed="true"]) .sex-symbol:not(.sex-backdrop) {
+  filter: none;
+}
+.sex:not([aria-pressed="true"]):hover .sex-symbol:not(.sex-backdrop) {
+  filter: drop-shadow(0 0 6px #4f4f6460);
+}
+.selector {
+  overflow: hidden;
+}
+.selector > span {
+  display: block;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+.selector .arrow {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.range {
+  touch-action: none;
+}
+.clothes {
+  overflow: visible;
+}
+.create-character {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  border-radius: 3px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 20px;
+  transform-origin: center;
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    transform 0.16s ease;
+}
+.create-character:hover,
+.create-character:focus-visible,
+.create-character:active {
+  background: var(--accent);
+  color: #fff;
+}
+.create-character:active {
+  transform: scale(0.96);
+}
+
+/* 4. Мгновенная подсветка символов пола. */
+.sex:hover,
+.sex:focus-visible,
+.sex[aria-pressed="true"] {
+  --glyph-color: var(--sex-color);
+}
+.sex-glow {
+  position: absolute;
+  left: 82.5px;
+  top: 33px;
+  width: 35px;
+  height: 64px;
+  pointer-events: none;
+  filter: none;
+}
+.sex .sex-glow .sex-symbol {
+  left: 0;
+  top: 0;
+  opacity: 1;
+  filter: none !important;
+  transition: none;
+}
+.sex .sex-glow .sex-symbol:before,
+.sex .sex-glow .sex-symbol:after,
+.sex .sex-glow .sex-ring {
+  transition: none;
+}
+.sex:hover .sex-glow,
+.sex:focus-visible .sex-glow,
+.sex[aria-pressed="true"] .sex-glow {
+  filter: drop-shadow(
+    0 0 6px color-mix(in srgb, var(--sex-color) 65%, transparent)
+  );
+}
+/* 5. Кнопка создания у нижнего края экрана. */
+.create-character {
+  height: 60px;
+  line-height: 60px;
+  font-size: 16px;
+  border-radius: 8px;
+  top: calc((var(--scene-height) + var(--panel-height)) / 2 - 90px);
+}
+
+/* 6. Настраиваемый hover, имена-слайды, точное наведение и палитры. */
+.sex-glow {
+  transition: filter var(--sex-hover-duration) ease;
+}
+.sex .sex-glow .sex-symbol,
+.sex .sex-glow .sex-symbol::before,
+.sex .sex-glow .sex-symbol::after,
+.sex .sex-glow .sex-ring {
+  transition: background-color var(--sex-hover-duration) ease;
+}
+.parent-name-viewport {
+  position: relative;
+  height: 35px;
+  min-width: 0;
+  overflow: hidden;
+}
+.parent-name {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  white-space: nowrap;
+}
+.range:hover::-webkit-slider-thumb,
+.range:active::-webkit-slider-thumb,
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: none;
+}
+.range:hover::-moz-range-thumb,
+.range:active::-moz-range-thumb,
+.range:focus-visible::-moz-range-thumb {
+  box-shadow: none;
+}
+.range.thumb-hover::-webkit-slider-thumb {
+  box-shadow: 0 0 8px #fff8;
+}
+.range.thumb-hover::-moz-range-thumb {
+  box-shadow: 0 0 8px #fff8;
+}
+.palette-label {
+  height: 18px;
+}
+.palette-viewport {
+  position: relative;
+  width: 396px;
+  height: 26px;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.palette-viewport::before,
+.palette-viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 19px;
+  height: 19px;
+  z-index: 2;
+  pointer-events: none;
+}
+.palette-viewport::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(19, 19, 28, 0.48), transparent);
+}
+.palette-viewport::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(19, 19, 28, 0.48), transparent);
+}
+.swatches {
+  width: max-content;
+  height: 26px;
+  transition: transform var(--palette-slide-duration) ease;
+}
+.swatch {
+  position: relative;
+}
+.swatch[aria-pressed="true"],
+.swatch:focus-visible {
+  outline: none;
+}
+.swatch::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 23px;
+  width: 19px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0;
+}
+.swatch[aria-pressed="true"]::after {
+  opacity: 1;
+}
+.create-action {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  width: 462px;
+  height: 60px;
+}
+.create-action[hidden] {
+  display: none;
+}
+.create-action .create-character {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-size: 18px;
+}
+
+/* 7. Кольцевая палитра и синхронный прогресс цвета/свечения. */
+@property --sex-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+.sex {
+  --sex-progress: 0;
+  transition: --sex-progress var(--sex-hover-duration) ease-out;
+}
+.sex:hover,
+.sex:focus-visible,
+.sex[aria-pressed="true"] {
+  --sex-progress: 1;
+}
+.sex,
+.sex:hover,
+.sex:focus-visible,
+.sex[aria-pressed="true"] {
+  --glyph-color: color-mix(
+    in srgb,
+    var(--sex-color) calc(var(--sex-progress) * 100%),
+    #4f4f64
+  );
+}
+.sex .sex-glow,
+.sex:hover .sex-glow,
+.sex:focus-visible .sex-glow,
+.sex[aria-pressed="true"] .sex-glow {
+  /* Фиксированный радиус: цвет и прозрачность света следуют одному прогрессу. */
+  filter: drop-shadow(
+    0 0 8px
+      color-mix(
+        in srgb,
+        var(--sex-color) calc(var(--sex-progress) * 65%),
+        transparent
+      )
+  );
+  transition: none;
+}
+.sex .sex-glow .sex-symbol,
+.sex .sex-glow .sex-symbol::before,
+.sex .sex-glow .sex-symbol::after,
+.sex .sex-glow .sex-ring {
+  transition: none;
+}
+.palette-label {
+  position: relative;
+  top: -5px;
+}
+.swatch::after {
+  display: none;
+}
+.palette-indicator {
+  position: absolute;
+  left: 0;
+  top: 23px;
+  width: 19px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+  transition: transform var(--palette-indicator-duration)
+    cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.arrow,
+.arrow:hover,
+.arrow:active,
+.arrow:focus-visible {
+  filter: none;
+}
