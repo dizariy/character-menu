@@ -32,6 +32,62 @@ document.documentElement.style.setProperty(
 );
 
 // 2. Данные и шаблоны интерфейса.
+// Имена по GTA Wiki; ключ соответствует номеру PNG, а не ID модели GTA.
+// Источники и таблица сопоставления: PARENTS.md.
+const PARENT_NAMES = {
+  mother: {
+    1: "Ханна",
+    2: "Одри",
+    3: "Жасмин",
+    4: "Жизель",
+    5: "Амелия",
+    6: "Изабелла",
+    7: "Зои",
+    8: "Ава",
+    9: "Камила",
+    10: "Вайолет",
+    11: "София",
+    12: "Эвелин",
+    13: "Николь",
+    14: "Эшли",
+    15: "Грейс",
+    16: "Брианна",
+    17: "Натали",
+    18: "Оливия",
+    19: "Элизабет",
+    20: "Шарлотта",
+    21: "Эмма",
+    22: "Мисти",
+  },
+  father: {
+    1: "Дэниел",
+    2: "Джошуа",
+    3: "Ноа",
+    4: "Эндрю",
+    5: "Хуан",
+    6: "Алекс",
+    7: "Айзек",
+    8: "Эван",
+    9: "Итан",
+    10: "Винсент",
+    11: "Энджел",
+    12: "Диего",
+    13: "Адриан",
+    14: "Габриэль",
+    15: "Майкл",
+    16: "Сантьяго",
+    17: "Кевин",
+    18: "Луис",
+    19: "Сэмюэл",
+    20: "Энтони",
+    21: "Клод",
+    22: "Нико",
+    23: "Джон",
+    24: "Бенджамин",
+  },
+};
+const parentName = (key, index) => PARENT_NAMES[key][index];
+
 const titles = ["Генетика", "Лицо", "Внешность", "Причёска", "Одежда"];
 const classes = ["genetics", "face", "appearance", "hair", "clothes"];
 const headers = [
@@ -48,11 +104,7 @@ const range = (name, wide = false, ends = null, value = 50) => /* HTML */ `
   <label class="control ${wide ? "wide" : ""}">
     <span class="control-title">${name}</span>
     <span class="range-row">
-      ${ends
-        ? /* HTML */ `
-            <span>${ends[0]}</span>
-          `
-        : ""}
+      ${ends ? /* HTML */ ` <span>${ends[0]}</span> ` : ""}
       <input
         class="range"
         aria-label="${name}"
@@ -62,11 +114,7 @@ const range = (name, wide = false, ends = null, value = 50) => /* HTML */ `
         value="${value}"
         style="--fill:${value}%"
       />
-      ${ends
-        ? /* HTML */ `
-            <span>${ends[1]}</span>
-          `
-        : ""}
+      ${ends ? /* HTML */ ` <span>${ends[1]}</span> ` : ""}
     </span>
   </label>
 `;
@@ -143,7 +191,7 @@ const styles = (name) => /* HTML */ `
           <button
             class="style-option"
             aria-label="${name}: вариант ${i + 1}"
-            aria-pressed="${i === 1}"
+            aria-pressed="${i === 0}"
             data-value="${i + 1}"
           >
             #${i + 1}
@@ -167,7 +215,7 @@ const selector = (name, key) => /* HTML */ `
       </button>
       <span class="parent-name-viewport">
         <span id="${key}-name" class="parent-name">
-          ${key === "mother" ? "Мисти" : "Нико"}
+          ${parentName(key, 22)}
         </span>
       </span>
       <button
@@ -211,25 +259,25 @@ const content = [
         <span class="sex-symbol">
           <img src="${asset("gen-imgGroup13")}" alt="" />
         </span>
-        <span>Мужской</span>
+        <span class="sex-label">Мужской</span>
       </button>
       <button class="sex sex-female" data-sex="female" aria-pressed="false">
         <span class="sex-symbol female-symbol">
           <img src="${asset("gen-imgEllipse2")}" alt="" />
         </span>
-        <span>Женский</span>
+        <span class="sex-label">Женский</span>
       </button>
     </div>
     <div class="parents">
       <img
         class="portrait mother"
         src="assets/gen-img221.png"
-        alt="Мать — Мисти"
+        alt="Мать — ${parentName("mother", 22)}"
       />
       <img
         class="portrait father"
         src="assets/gen-img222.png"
-        alt="Отец — Нико"
+        alt="Отец — ${parentName("father", 22)}"
       />
     </div>
     <div class="parent-selectors">
@@ -516,12 +564,7 @@ async function changeParent(key, step) {
       const preload = new Image();
       preload.src = source;
       await preload.decode();
-      const name =
-        target === 22
-          ? key === "mother"
-            ? "Мисти"
-            : "Нико"
-          : `Вариант ${target}`;
+      const name = parentName(key, target);
       await Promise.all([
         slideParentName(key, name, direction),
         (async () => {

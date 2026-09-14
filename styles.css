@@ -175,6 +175,13 @@ input:focus-visible {
   left: 0;
   width: 100%;
 }
+.sex .sex-label {
+  color: var(--muted);
+  transition: color var(--sex-hover-duration) ease-out;
+}
+.sex[aria-pressed="true"] .sex-label {
+  color: #fff;
+}
 .sex-symbol {
   position: absolute;
   top: 33px;
@@ -929,7 +936,7 @@ body {
 .sex[aria-pressed="true"] .sex-glow {
   /* Фиксированный радиус: цвет и прозрачность света следуют одному прогрессу. */
   filter: drop-shadow(
-    0 0 8px
+    0 0 6px
       color-mix(
         in srgb,
         var(--sex-color) calc(var(--sex-progress) * 65%),
